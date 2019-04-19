@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-filter-cool": [
+        "dist/ng-filter-cool"
+      ],
+      "ng-filter-cool/*": [
+        "dist/ng-filter-cool/*"
+      ]
+    }
   }
 }
