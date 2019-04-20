@@ -14,4 +14,4 @@ import { FilterByPipe } from './pipes/filter-by/pipe';
         FilterByPipe
     ]
 })
-export class NgCoolFilterModule { }
+export class NgCoolFilterPipeModule { }
