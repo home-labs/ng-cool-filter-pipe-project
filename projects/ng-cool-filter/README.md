@@ -23,7 +23,7 @@ import { NgCoolFilterModule } from 'ng-cool-filter';
 export class MyModule() { }
 ```
 
-## Usage example with ngFor directive
+## Usage example with ```*ngFor``` directive
 
 ### Component source control
 
