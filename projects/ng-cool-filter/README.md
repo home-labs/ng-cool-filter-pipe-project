@@ -10,7 +10,7 @@
 
 ## Usage
 
-Include the module into `imports` metadata key of `NgModule` decorator in your application, importing `NgCoolFilterModule` from `ng-cool-filter`, like that.
+Include the module into `imports` metadata key of `NgModule` decorator in your application context, importing `NgCoolFilterModule` from `ng-cool-filter`, like that.
 
 ```typescript
 import { NgCoolFilterModule } from 'ng-cool-filter';
