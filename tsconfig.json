@@ -19,11 +19,11 @@
       "dom"
     ],
     "paths": {
-      "ng-filter-cool": [
-        "dist/ng-filter-cool"
+      "ng-cool-filter": [
+        "dist/ng-cool-filter"
       ],
-      "ng-filter-cool/*": [
-        "dist/ng-filter-cool/*"
+      "ng-cool-filter/*": [
+        "dist/ng-cool-filter/*"
       ]
     }
   }

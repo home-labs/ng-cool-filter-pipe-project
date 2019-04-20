@@ -5,14 +5,14 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 
-import { NgFilterCoolModule } from 'ng-filter-cool';
+import { NgCoolFilterModule } from 'ng-cool-filter';
 
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
-        NgFilterCoolModule
+        NgCoolFilterModule
     ],
     declarations: [
         AppComponent
