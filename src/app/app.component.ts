@@ -8,12 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-    objects: Object[];
+    collection: Object[];
 
-    filterText: string;
+    filterTerm: string;
 
     constructor() {
-        this.objects = [
+        this.collection = [
             {
                 name: 'Rafael Pereira Laurindo',
                 sexo: 'masculino'
@@ -36,7 +36,7 @@ export class AppComponent {
             }
         ];
 
-        this.filterText = '';
+        this.filterTerm = '';
     }
 
 }

@@ -1,14 +1,14 @@
 
 <input
   type="text"
-  [(ngModel)]="filterText"
+  [(ngModel)]="filterTerm"
   [ngModelOptions]="{
     standalone: true
   }"
   />
 
 <ul>
-  <li *ngFor="let object of objects | filterBy:filterText:'name'">
+  <li *ngFor="let object of collection | filterBy:filterTerm:'name'">
     {{ object.name }}
   </li>
 </ul>
