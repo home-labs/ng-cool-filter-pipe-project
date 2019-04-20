@@ -1,0 +1,42 @@
+import {
+    Pipe,
+    PipeTransform
+} from '@angular/core';
+
+import { Filter } from '../../../lib/filter';
+
+
+@Pipe({
+    name: 'filterBy'
+})
+export class FilterByPipe implements PipeTransform {
+
+    private filter: Filter;
+
+    constructor() {
+        this.filter = new Filter();
+    }
+
+    transform(collection: Object[], term: string, ...properties: string[]): Object[] {
+
+        const
+            filtered: Object[] = [];
+
+        if (!collection.length) {
+            return collection;
+        }
+
+        if (term !== '') {
+            this.filter.getMaps(collection, term, ...properties).forEach(
+                (map: Object) => {
+                    filtered.push(map['source']);
+                }
+            );
+
+            return filtered;
+        }
+
+        return collection;
+    }
+
+}
