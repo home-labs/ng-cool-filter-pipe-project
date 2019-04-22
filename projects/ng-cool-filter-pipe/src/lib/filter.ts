@@ -7,7 +7,6 @@ export class Filter {
     getMaps(
         collection: Object[],
         term: string,
-        options: Object = {},
         ...properties: string[]
     ): Object[] {
         let
@@ -18,10 +17,6 @@ export class Filter {
             maps: Object[] = [];
 
         if (term !== '') {
-            if (typeof options !== 'object') {
-                properties.push(options);
-            }
-
             if (!properties.length) {
                 properties = Object.keys(collection[0]);
             }
@@ -29,7 +24,7 @@ export class Filter {
             collection.forEach(
                 (object: Object) => {
                     for (const property of properties) {
-                        map = this.mapIfFound(term, object[property], options);
+                        map = this.mapIfFound(term, object[property]);
                         if (map) {
                             map['source'] = object;
                             maps.push(map);
@@ -45,7 +40,6 @@ export class Filter {
     private mapIfFound(
         term: string,
         text: string,
-        options: Object = {}
     ): Object | null {
 
         let
@@ -67,34 +61,20 @@ export class Filter {
             }
             ;
 
-        if (!options.hasOwnProperty('wholeWhenMoreThanOneWord')) {
-        //     options['wholeWhenMoreThanOneWord'] = true;
-        }
-
         if (wordsHashTable['length'] >= termSlices.length) {
-            // for (let termSlice of termSlices) {
-                // termSlice = termSlice.trim();
             for (let i = 0; i < termSlices.length; i++) {
                 termSlice = termSlices[i].trim();
 
-                // se o índice da fatia não for o último a palavra buscada deve ser comparada na íntegra
+                if (i < termSlices.length - 1) {
+                    wordIndex = this.indexOf(wordsHashTable, termSlice, true);
+                } else if (this.termCount(words, termSlice) >=
+                    this.termCount(termSlices, termSlice)
+                ) {
+                    wordIndex = this.indexOf(wordsHashTable, termSlice);
+                }
 
-                // debugger
-                // if () {
-                //     wordIndex = this.indexOf(wordsHashTable, termSlice,
-                //         wordIndex, options['wholeWhenMoreThanOneWord']);
-                // } else {
-                //     wordIndex = this.indexOf(wordsHashTable, termSlice,
-                //         wordIndex);
-                // }
-                wordIndex = this.indexOf(wordsHashTable, termSlice);
-                // debugger
                 if (wordIndex !== -1
                     && (wordIndex > cachedWordIndex)
-                    && (
-                        this.termCount(words, termSlice) >=
-                        this.amountOf(termSlices, termSlice)
-                    )
                 ) {
                     cachedWordIndex = wordIndex
 
@@ -163,9 +143,8 @@ export class Filter {
     private indexOf(
         object: Object,
         term: string,
-        wholeWord: Boolean = false)
-        : Number
-    {
+        wholeWord: Boolean = false
+    ): Number {
         let
             regexp: RegExp,
             index = -1,
@@ -181,7 +160,9 @@ export class Filter {
         if (wholeWord) {
             for (const p of properties) {
                 if (typeof object[p] === 'string') {
-                    if (object[p] === term) {
+                    if (`${object[p]}`.toLocaleLowerCase()
+                        === term.toLowerCase()
+                    ) {
                         index = Number.parseInt(p);
                         break;
                     }
@@ -193,7 +174,7 @@ export class Filter {
 
             for (const p of properties) {
                 if (typeof object[p] === 'string') {
-                    if (object[p].search(regexp) !== -1) {
+                    if (object[p].search(regexp) === 0) {
                         index = Number.parseInt(p);
                         break;
                     }
@@ -209,7 +190,10 @@ export class Filter {
         return -1;
     }
 
-    private termCount(collection: string[], term: string) {
+    private termCount(
+        collection: string[],
+        term: string
+    ) {
         let
             i: any,
             regexp: RegExp,
@@ -236,32 +220,6 @@ export class Filter {
         }
 
         return count;
-    }
-
-    private amountOf(collection: string[], item: string) {
-
-        let
-            amount = 0,
-            i = 0
-            ;
-
-        if (item || typeof item === 'number') {
-            while (true) {
-                i = collection.indexOf(item, i);
-                if (i > -1) {
-                    amount++;
-                    if (++i === collection.length) {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-        } else {
-            amount = collection.length;
-        }
-
-        return amount;
     }
 
 }

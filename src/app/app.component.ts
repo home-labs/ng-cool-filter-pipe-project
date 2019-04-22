@@ -19,7 +19,7 @@ export class AppComponent {
                 sexo: 'masculino'
             },
             {
-                name: 'Rafael Pereira Rafael',
+                name: 'Rafael Pereira Rafa',
                 sexo: 'masculino'
             },
             {
