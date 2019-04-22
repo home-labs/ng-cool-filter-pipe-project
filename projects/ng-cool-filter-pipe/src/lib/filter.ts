@@ -66,11 +66,11 @@ export class Filter {
                 termSlice = termSlices[i].trim();
 
                 if (i < termSlices.length - 1) {
-                    wordIndex = this.indexOf(wordsHashTable, termSlice, true);
+                    wordIndex = this.indexOf(wordsHashTable, termSlice);
                 } else if (this.termCount(words, termSlice) >=
                     this.termCount(termSlices, termSlice)
                 ) {
-                    wordIndex = this.indexOf(wordsHashTable, termSlice);
+                    wordIndex = this.indexOf(wordsHashTable, termSlice, false);
                 }
 
                 if (wordIndex !== -1
@@ -143,7 +143,7 @@ export class Filter {
     private indexOf(
         object: Object,
         term: string,
-        wholeWord: Boolean = false
+        wholeWord: Boolean = true
     ): Number {
         let
             regexp: RegExp,
@@ -208,7 +208,7 @@ export class Filter {
 
         regexp = new RegExp(term, 'i');
 
-        i = this.indexOf(clone, term);
+        i = this.indexOf(clone, term, false);
 
         if (i > -1) {
             while (i < collection.length) {
