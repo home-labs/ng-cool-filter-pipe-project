@@ -88,7 +88,7 @@ export class Filter {
                 //         wordIndex);
                 // }
                 wordIndex = this.indexOf(wordsHashTable, termSlice);
-
+                // debugger
                 if (wordIndex !== -1
                     && (wordIndex > cachedWordIndex)
                     && (
@@ -96,7 +96,6 @@ export class Filter {
                         this.amountOf(termSlices, termSlice)
                     )
                 ) {
-                    debugger
                     cachedWordIndex = wordIndex
 
                     regexp = new RegExp(termSlice, 'i');
@@ -231,10 +230,8 @@ export class Filter {
             while (i < collection.length) {
                 if (clone[i].trim().search(regexp) > -1) {
                     count += 1;
-                    i++;
-                } else {
-                    break;
                 }
+                i++;
             }
         }
 
