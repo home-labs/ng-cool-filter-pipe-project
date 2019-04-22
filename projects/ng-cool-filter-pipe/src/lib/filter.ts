@@ -4,7 +4,12 @@ export class Filter {
 
     }
 
-    getMaps(collection: Object[], term: string, ...properties: string[]): Object[] {
+    getMaps(
+        collection: Object[],
+        term: string,
+        options: Object = {},
+        ...properties: string[]
+    ): Object[] {
         let
             map: Object
             ;
@@ -13,6 +18,10 @@ export class Filter {
             maps: Object[] = [];
 
         if (term !== '') {
+            if (typeof options !== 'object') {
+                properties.push(options);
+            }
+
             if (!properties.length) {
                 properties = Object.keys(collection[0]);
             }
@@ -20,7 +29,7 @@ export class Filter {
             collection.forEach(
                 (object: Object) => {
                     for (const property of properties) {
-                        map = this.mapIfFound(term, object[property]);
+                        map = this.mapIfFound(term, object[property], options);
                         if (map) {
                             map['source'] = object;
                             maps.push(map);
@@ -33,47 +42,69 @@ export class Filter {
         }
     }
 
-    private mapIfFound(term: string, text: string): Object | null {
+    private mapIfFound(
+        term: string,
+        text: string,
+        options: Object = {}
+    ): Object | null {
+
         let
-            sliceIndex: Number,
+            termIndex: Number,
             amount = 0,
             regexp: RegExp,
-            wordIndex: Number = 0,
-            cachedWordIndex: Number = -1
+            wordIndex: Number = -1,
+            cachedWordIndex: Number = -1,
+            termSlice: string
             ;
 
         const
-            slices = term.split(' '),
+            termSlices = term.split(' ').filter(item => item !== ''),
             words = text.split(' '),
             wordsHashTable: Object = this.asCountableLiteral(words),
             map = {
-                terms: slices,
+                terms: termSlices,
                 mapping: {}
             }
             ;
 
-        if (wordsHashTable['length'] >= slices.length) {
-            for (let slice of slices) {
-                slice = slice.trim();
+        if (!options.hasOwnProperty('wholeWhenMoreThanOneWord')) {
+        //     options['wholeWhenMoreThanOneWord'] = true;
+        }
 
-                wordIndex = this.firstFromTerm(wordsHashTable, slice,
-                    wordIndex);
+        if (wordsHashTable['length'] >= termSlices.length) {
+            // for (let termSlice of termSlices) {
+                // termSlice = termSlice.trim();
+            for (let i = 0; i < termSlices.length; i++) {
+                termSlice = termSlices[i].trim();
+
+                // se o índice da fatia não for o último a palavra buscada deve ser comparada na íntegra
+
+                // debugger
+                // if () {
+                //     wordIndex = this.indexOf(wordsHashTable, termSlice,
+                //         wordIndex, options['wholeWhenMoreThanOneWord']);
+                // } else {
+                //     wordIndex = this.indexOf(wordsHashTable, termSlice,
+                //         wordIndex);
+                // }
+                wordIndex = this.indexOf(wordsHashTable, termSlice);
 
                 if (wordIndex !== -1
-                    && (
-                        this.termCount(words, slice) >=
-                        this.amountOf(slices, slice)
-                    )
                     && (wordIndex > cachedWordIndex)
+                    && (
+                        this.termCount(words, termSlice) >=
+                        this.amountOf(termSlices, termSlice)
+                    )
                 ) {
+                    debugger
                     cachedWordIndex = wordIndex
 
-                    regexp = new RegExp(slice, 'i');
+                    regexp = new RegExp(termSlice, 'i');
 
-                    sliceIndex = words[`${wordIndex}`].search(regexp);
+                    termIndex = words[`${wordIndex}`].search(regexp);
                     map.mapping[`${wordIndex}`] = {
-                        researchedSlice: slice,
-                        sliceIndex: sliceIndex
+                        researchedSlice: termSlice,
+                        termIndex: termIndex
                     };
 
                     delete wordsHashTable[`${wordIndex}`];
@@ -84,7 +115,7 @@ export class Filter {
                 }
             }
 
-            if (amount === slices.length) {
+            if (amount === termSlices.length) {
                 return map;
             }
         }
@@ -130,8 +161,12 @@ export class Filter {
         return clone;
     }
 
-    private firstFromTerm(object: Object, term: string, startingIndex: Number = 0): Number
-        | undefined {
+    private indexOf(
+        object: Object,
+        term: string,
+        wholeWord: Boolean = false)
+        : Number
+    {
         let
             regexp: RegExp,
             index = -1,
@@ -144,27 +179,38 @@ export class Filter {
 
         term = term.trim();
 
-        regexp = new RegExp(term, 'i');
-
-        for (const p of properties) {
-            if (typeof object[p] === 'string' &&
-                i >= startingIndex) {
-                if (object[p].search(regexp) !== -1) {
-                    index = Number.parseInt(p);
-                    break;
+        if (wholeWord) {
+            for (const p of properties) {
+                if (typeof object[p] === 'string') {
+                    if (object[p] === term) {
+                        index = Number.parseInt(p);
+                        break;
+                    }
                 }
+                i++;
             }
-            i++;
+        } else {
+            regexp = new RegExp(term, 'i');
+
+            for (const p of properties) {
+                if (typeof object[p] === 'string') {
+                    if (object[p].search(regexp) !== -1) {
+                        index = Number.parseInt(p);
+                        break;
+                    }
+                }
+                i++;
+            }
         }
 
         if (index !== -1) {
             return index;
         }
 
-        return undefined;
+        return -1;
     }
 
-    private termCount(collection: string[], term: string, startingIndex: Number = 0) {
+    private termCount(collection: string[], term: string) {
         let
             i: any,
             regexp: RegExp,
@@ -179,7 +225,7 @@ export class Filter {
 
         regexp = new RegExp(term, 'i');
 
-        i = this.firstFromTerm(clone, term, startingIndex);
+        i = this.indexOf(clone, term);
 
         if (i > -1) {
             while (i < collection.length) {
