@@ -1,7 +1,12 @@
 export class Filter {
 
-    constructor() {
+    private filtered: Object[];
 
+    private cachedTerm: string;
+
+    constructor() {
+        this.filtered = [];
+        this.cachedTerm = '';
     }
 
     getMaps(
@@ -14,27 +19,49 @@ export class Filter {
             ;
 
         const
-            maps: Object[] = [];
+            maps: Object[] = [],
+            filtered: Object[] = [];
 
-        if (term !== '') {
-            if (!properties.length) {
-                properties = Object.keys(collection[0]);
-            }
+        if (
+            term.length < this.cachedTerm.length
+            || !this.filtered.length
+        ) {
+            this.filtered = collection;
+        }
 
-            collection.forEach(
+        if (!properties.length) {
+            properties = Object.keys(collection[0]);
+        }
+
+        if (term === '') {
+            this.filtered.forEach(
+                (object: Object) => {
+                    filtered.push(object);
+                    map = new Object();
+                    map['source'] = object;
+                    maps.push(map);
+                }
+            );
+        } else {
+
+            this.filtered.forEach(
                 (object: Object) => {
                     for (const property of properties) {
                         map = this.mapIfFound(term, object[property]);
                         if (map) {
+                            filtered.push(object);
                             map['source'] = object;
                             maps.push(map);
                         }
                     }
                 }
             );
-
-            return maps;
         }
+
+        this.filtered = filtered;
+        this.cachedTerm = term;
+
+        return maps;
     }
 
     private mapIfFound(
