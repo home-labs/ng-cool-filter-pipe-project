@@ -20,6 +20,7 @@ export class FilterByPipe implements PipeTransform {
     constructor() {
         this.filter = new Filter();
         this.filtered = [];
+        this.cachedTerm = '';
     }
 
     transform(collection: Object[], term: string, ...properties: string[]): Object[] {
@@ -28,7 +29,6 @@ export class FilterByPipe implements PipeTransform {
             filtered: Object[] = [];
 
         if (!collection.length || term === '') {
-            this.cachedTerm = '';
             return collection;
         }
 
