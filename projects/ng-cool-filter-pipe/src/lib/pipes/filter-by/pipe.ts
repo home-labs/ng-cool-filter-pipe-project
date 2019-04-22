@@ -13,8 +13,13 @@ export class FilterByPipe implements PipeTransform {
 
     private filter: Filter;
 
+    private filtered: Object[];
+
+    private cachedTerm: string;
+
     constructor() {
         this.filter = new Filter();
+        this.filtered = [];
     }
 
     transform(collection: Object[], term: string, ...properties: string[]): Object[] {
@@ -22,21 +27,28 @@ export class FilterByPipe implements PipeTransform {
         const
             filtered: Object[] = [];
 
-        if (!collection.length) {
+        if (!collection.length || term === '') {
+            this.cachedTerm = '';
             return collection;
         }
 
-        if (term !== '') {
-            this.filter.getMaps(collection, term, ...properties).forEach(
-                (map: Object) => {
-                    filtered.push(map['source']);
-                }
-            );
-
-            return filtered;
+        if (
+            term.length < this.cachedTerm.length
+            || !this.filtered.length
+        ) {
+            this.filtered = collection;
         }
 
-        return collection;
+        this.filter.getMaps(this.filtered, term, ...properties).forEach(
+            (map: Object) => {
+                filtered.push(map['source']);
+            }
+        );
+
+        this.filtered = filtered;
+        this.cachedTerm = term;
+
+        return this.filtered;
     }
 
 }
