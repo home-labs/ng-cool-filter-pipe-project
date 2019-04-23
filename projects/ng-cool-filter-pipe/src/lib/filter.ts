@@ -2,11 +2,11 @@ export class Filter {
 
     private filtered: Object[];
 
-    private cachedTerm: string;
+    private foundCache: Object;
 
     constructor() {
         this.filtered = [];
-        this.cachedTerm = '';
+        this.foundCache = {};
     }
 
     getMaps(
@@ -22,10 +22,9 @@ export class Filter {
             maps: Object[] = [],
             filtered: Object[] = [];
 
-        if (
-            term.length < this.cachedTerm.length
-            || !this.filtered.length
-        ) {
+        if (this.foundCache.hasOwnProperty(term)) {
+            this.filtered = this.foundCache[term];
+        } else {
             this.filtered = collection;
         }
 
@@ -43,7 +42,6 @@ export class Filter {
                 }
             );
         } else {
-
             this.filtered.forEach(
                 (object: Object) => {
                     for (const property of properties) {
@@ -56,10 +54,11 @@ export class Filter {
                     }
                 }
             );
+
+            this.foundCache[term] = filtered;
         }
 
         this.filtered = filtered;
-        this.cachedTerm = term;
 
         return maps;
     }
