@@ -2,8 +2,11 @@ export class Filter {
 
     private filteredCollectionCacheHashTableIndex: Object;
 
+    private initialMaps: Object[];
+
     constructor() {
         this.filteredCollectionCacheHashTableIndex = {};
+        this.initialMaps = [];
     }
 
     getMaps(
@@ -12,11 +15,11 @@ export class Filter {
         ...properties: string[]
     ): Object[] {
         let
-            map: Object
+            map: Object,
+            maps: Object[] = []
             ;
 
         const
-            maps: Object[] = [],
             filtered: Object[] = [];
 
         if (this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
@@ -28,14 +31,18 @@ export class Filter {
         }
 
         if (term === '') {
-            collection.forEach(
-                (object: Object) => {
-                    filtered.push(object);
-                    map = new Object();
-                    map['source'] = object;
-                    maps.push(map);
-                }
-            );
+            if (!this.initialMaps.length) {
+                collection.forEach(
+                    (object: Object) => {
+                        filtered.push(object);
+                        map = new Object();
+                        map['source'] = object;
+                        this.initialMaps.push(map);
+                    }
+                );
+            }
+
+            maps = this.initialMaps;
         } else {
             collection.forEach(
                 (object: Object) => {
@@ -45,6 +52,7 @@ export class Filter {
                             filtered.push(object);
                             map['source'] = object;
                             maps.push(map);
+                            break;
                         }
                     }
                 }
