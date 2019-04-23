@@ -1,12 +1,9 @@
 export class Filter {
 
-    private filtered: Object[];
-
-    private foundCache: Object;
+    private filteredCollectionCacheHashTableIndex: Object;
 
     constructor() {
-        this.filtered = [];
-        this.foundCache = {};
+        this.filteredCollectionCacheHashTableIndex = {};
     }
 
     getMaps(
@@ -22,10 +19,8 @@ export class Filter {
             maps: Object[] = [],
             filtered: Object[] = [];
 
-        if (this.foundCache.hasOwnProperty(term)) {
-            this.filtered = this.foundCache[term];
-        } else {
-            this.filtered = collection;
+        if (this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
+            collection = this.filteredCollectionCacheHashTableIndex[term];
         }
 
         if (!properties.length) {
@@ -33,7 +28,7 @@ export class Filter {
         }
 
         if (term === '') {
-            this.filtered.forEach(
+            collection.forEach(
                 (object: Object) => {
                     filtered.push(object);
                     map = new Object();
@@ -42,7 +37,7 @@ export class Filter {
                 }
             );
         } else {
-            this.filtered.forEach(
+            collection.forEach(
                 (object: Object) => {
                     for (const property of properties) {
                         map = this.mapIfFound(term, object[property]);
@@ -55,10 +50,8 @@ export class Filter {
                 }
             );
 
-            this.foundCache[term] = filtered;
+            this.filteredCollectionCacheHashTableIndex[term] = filtered;
         }
-
-        this.filtered = filtered;
 
         return maps;
     }
