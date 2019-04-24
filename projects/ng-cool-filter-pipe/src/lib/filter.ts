@@ -2,11 +2,14 @@ export class Filter {
 
     private initialMaps: Object[];
 
+    private filteredCollectionCache: Object[];
+
     private filteredCollectionCacheHashTableIndex: Object;
 
     constructor() {
-        this.filteredCollectionCacheHashTableIndex = {};
         this.initialMaps = [];
+        this.filteredCollectionCache = [];
+        this.filteredCollectionCacheHashTableIndex = {};
     }
 
     getMaps(
@@ -22,6 +25,8 @@ export class Filter {
 
         if (this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
             collection = this.filteredCollectionCacheHashTableIndex[term];
+        } else if (this.filteredCollectionCache.length) {
+            collection = this.filteredCollectionCache;
         }
 
         if (!properties.length) {
@@ -30,7 +35,8 @@ export class Filter {
 
         if (term === '') {
             if (
-                !this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)
+                !this.filteredCollectionCacheHashTableIndex
+                    .hasOwnProperty(term)
                 )
             {
                 collection.forEach(
@@ -58,9 +64,9 @@ export class Filter {
                     }
                 }
             );
-
         }
 
+        this.filteredCollectionCache = filtered;
         this.filteredCollectionCacheHashTableIndex[term] = filtered;
 
         return maps;
