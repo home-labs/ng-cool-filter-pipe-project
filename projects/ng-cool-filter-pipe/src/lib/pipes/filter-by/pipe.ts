@@ -22,7 +22,7 @@ export class FilterByPipe implements PipeTransform {
         const
             filtered: Object[] = [];
 
-        // cause' the asynchronous load
+        // cause' the asynchronous loading
         if (!collection.length) {
             return collection;
         }
