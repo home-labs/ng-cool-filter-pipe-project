@@ -37,8 +37,7 @@ export class Filter {
             if (
                 !this.filteredCollectionCacheHashTableIndex
                     .hasOwnProperty(term)
-                )
-            {
+                ) {
                 collection.forEach(
                     (object: Object) => {
                         map = new Object();
@@ -111,7 +110,7 @@ export class Filter {
                 if (wordIndex !== -1
                     && (wordIndex > cachedWordIndex)
                 ) {
-                    cachedWordIndex = wordIndex
+                    cachedWordIndex = wordIndex;
 
                     regexp = new RegExp(termSlice, 'i');
 
@@ -198,7 +197,7 @@ export class Filter {
                     if (`${object[p]}`.toLocaleLowerCase()
                         === term.toLowerCase()
                     ) {
-                        index = Number.parseInt(p);
+                        index = Number.parseInt(p, 10);
                         break;
                     }
                 }
@@ -210,7 +209,7 @@ export class Filter {
             for (const p of properties) {
                 if (typeof object[p] === 'string') {
                     if (object[p].search(regexp) === 0) {
-                        index = Number.parseInt(p);
+                        index = Number.parseInt(p, 10);
                         break;
                     }
                 }
