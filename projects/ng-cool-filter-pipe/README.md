@@ -73,8 +73,6 @@ export class AppComponent {
 ```
 
 ### Template
-
-### Template
 ```html
 <input
   type="text"

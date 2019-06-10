@@ -22,6 +22,11 @@ export class FilterByPipe implements PipeTransform {
         const
             filtered: Object[] = [];
 
+        // cause' the asynchronous loading
+        if (!collection.length) {
+            return collection;
+        }
+
         this.filter.getMaps(collection, term, ...properties).forEach(
             (map: Object) => {
                 filtered.push(map['source']);
