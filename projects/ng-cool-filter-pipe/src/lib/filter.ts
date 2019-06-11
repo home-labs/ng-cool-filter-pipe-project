@@ -140,9 +140,9 @@ export class Filter {
         const
             clone: Object = {},
 
-            setAccessors: Function = function (object: Object) {
+            setAccessors: Function = (object: Object) => {
                 const
-                    calculateLength: Function = function () {
+                    calculateLength: Function = () => {
                         return Object.keys(object).length;
                     };
 
@@ -151,12 +151,12 @@ export class Filter {
 
                 const
 
-                    accessors: Function = function () {
+                    accessors: Function = () => {
                         return {
-                            get: function () {
+                            get: () => {
                                 return length;
                             },
-                            set: function () {
+                            set: () => {
                                 length = calculateLength();
                             }
                         };
