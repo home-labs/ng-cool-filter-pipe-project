@@ -1,1 +1,0 @@
-export { NgCoolFilterPipeModule } from './module';

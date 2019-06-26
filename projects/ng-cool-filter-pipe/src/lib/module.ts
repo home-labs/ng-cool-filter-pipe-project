@@ -4,11 +4,11 @@ import { FilterByPipe } from './pipes/filter-by/pipe';
 
 
 @NgModule({
-    declarations: [
-        FilterByPipe
-    ],
     imports: [
 
+    ],
+    declarations: [
+        FilterByPipe
     ],
     exports: [
         FilterByPipe
