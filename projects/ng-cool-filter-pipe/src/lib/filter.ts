@@ -12,11 +12,7 @@ export class Filter {
         this.filteredCollectionCacheHashTableIndex = {};
     }
 
-    getMaps(
-        collection: Object[],
-        term: string,
-        ...properties: string[]
-    ): Object[] {
+    getMaps(collection: Object[], term: string, ...properties: string[]): Object[] {
         let
             filtered: Object[] = [],
             map: Object,
@@ -71,10 +67,7 @@ export class Filter {
         return maps;
     }
 
-    private mapIfFound(
-        term: string,
-        text: string,
-    ): Object | null {
+    private mapIfFound(term: string, text: string): Object | null {
 
         let
             termIndex: Number,
@@ -174,11 +167,7 @@ export class Filter {
         return clone;
     }
 
-    private indexOf(
-        object: Object,
-        term: string,
-        wholeWord: Boolean = true
-    ): Number {
+    private indexOf( object: Object, term: string, wholeWord: Boolean = true): Number {
         let
             regexp: RegExp,
             index = -1,
@@ -224,19 +213,16 @@ export class Filter {
         return -1;
     }
 
-    private termCount(
-        collection: string[],
-        term: string
-    ) {
+    private termCount(collection: string[], term: string) {
         let
             i: any,
             regexp: RegExp,
             count = 0
-            ;
+        ;
 
         const
             clone = Object.assign([], collection)
-            ;
+        ;
 
         term = term.trim();
 
