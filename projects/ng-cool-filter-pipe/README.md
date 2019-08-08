@@ -2,7 +2,7 @@
 
 ## Requirements
 
->- Angular 4 or higher.
+>- Angular 5 or higher.
 
 ## Installing
 
