@@ -19,8 +19,7 @@ export class FilterByPipe implements PipeTransform {
 
     transform(collection: object[], term: string, ...properties: string[]): object[] {
 
-        const
-            filtered: object[] = [];
+        const filtered: object[] = [];
 
         // cause' the asynchronous loading
         if (collection && !collection.length) {

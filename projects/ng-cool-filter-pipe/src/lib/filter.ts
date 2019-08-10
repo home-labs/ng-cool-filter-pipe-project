@@ -137,28 +137,27 @@ export class Filter {
         const clone: object = {};
 
         const setAccessors: Function = (object: object) => {
-                const calculateLength: Function = () => {
-                    return Object.keys(object).length;
+            const calculateLength: Function = () => {
+                return Object.keys(object).length;
+            };
+
+            let length: number = calculateLength();
+
+            const accessors: Function = () => {
+                return {
+                    get: () => {
+                        return length;
+                    },
+                    set: () => {
+                        length = calculateLength();
+                    }
                 };
+            };
 
-                let length: number = calculateLength();
-
-                const accessors: Function = () => {
-                    return {
-                        get: () => {
-                            return length;
-                        },
-                        set: () => {
-                            length = calculateLength();
-                        }
-                    };
-                };
-
-                Object.defineProperties(object, {
-                    length: accessors(length)
-                });
-            }
-            ;
+            Object.defineProperties(object, {
+                length: accessors(length)
+            });
+        };
 
         Object.assign(clone, collection);
         setAccessors(clone);
@@ -173,17 +172,19 @@ export class Filter {
 
         let i: number = 0;
 
+        let property: string;
+
         const properties = Object.keys(object);
 
         term = term.trim();
 
         if (wholeWord) {
-            for (const p of properties) {
-                if (typeof object[p] === 'string') {
-                    if (`${object[p]}`.toLocaleLowerCase()
+            for (property of properties) {
+                if (typeof object[property] === 'string') {
+                    if (`${object[property]}`.toLocaleLowerCase()
                         === term.toLowerCase()
                     ) {
-                        index = Number.parseInt(p, 10);
+                        index = Number.parseInt(property, 10);
                         break;
                     }
                 }
@@ -192,10 +193,10 @@ export class Filter {
         } else {
             regexp = new RegExp(term, 'i');
 
-            for (const p of properties) {
-                if (typeof object[p] === 'string') {
-                    if (object[p].search(regexp) === 0) {
-                        index = Number.parseInt(p, 10);
+            for (property of properties) {
+                if (typeof object[property] === 'string') {
+                    if (object[property].search(regexp) === 0) {
+                        index = Number.parseInt(property, 10);
                         break;
                     }
                 }
