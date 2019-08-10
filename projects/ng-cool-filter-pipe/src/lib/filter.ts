@@ -1,10 +1,10 @@
 export class Filter {
 
-    private initialMaps: Object[];
+    private initialMaps: object[];
 
-    private filteredCollectionCache: Object[];
+    private filteredCollectionCache: object[];
 
-    private filteredCollectionCacheHashTableIndex: Object;
+    private filteredCollectionCacheHashTableIndex: object;
 
     constructor() {
         this.initialMaps = [];
@@ -12,12 +12,12 @@ export class Filter {
         this.filteredCollectionCacheHashTableIndex = {};
     }
 
-    getMaps(collection: Object[], term: string, ...properties: string[]): Object[] {
-        let
-            filtered: Object[] = [],
-            map: Object,
-            maps: Object[] = []
-            ;
+    getMaps(collection: object[], term: string, ...properties: string[]): object[] {
+        let filtered: object[] = [];
+
+        let map: object;
+
+        let maps: object[] = [];
 
         if (this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
             collection = this.filteredCollectionCacheHashTableIndex[term];
@@ -35,7 +35,7 @@ export class Filter {
                     .hasOwnProperty(term)
                 ) {
                 collection.forEach(
-                    (object: Object) => {
+                    (object: object) => {
                         map = new Object();
                         map['source'] = object;
                         this.initialMaps.push(map);
@@ -47,7 +47,7 @@ export class Filter {
             maps = this.initialMaps;
         } else {
             collection.forEach(
-                (object: Object) => {
+                (object: object) => {
                     for (const property of properties) {
                         map = this.mapIfFound(term, object[property]);
                         if (map) {
@@ -67,26 +67,30 @@ export class Filter {
         return maps;
     }
 
-    private mapIfFound(term: string, text: string): Object | null {
+    private mapIfFound(term: string, text: string): object | null {
 
-        let
-            termIndex: Number,
-            amount = 0,
-            regexp: RegExp,
-            wordIndex: Number = -1,
-            cachedWordIndex: Number = -1,
-            termSlice: string
-            ;
+        let termIndex: Number;
 
-        const
-            termSlices = term.split(' ').filter(item => item !== ''),
-            words = text.split(' '),
-            wordsHashTable: Object = this.asCountableLiteral(words),
-            map = {
-                terms: termSlices,
-                mapping: {}
-            }
-            ;
+        let amount = 0;
+
+        let regexp: RegExp;
+
+        let wordIndex: Number = -1;
+
+        let cachedWordIndex: Number = -1;
+
+        let termSlice: string;
+
+        const termSlices = term.split(' ').filter(item => item !== '');
+
+        const words = text.split(' ');
+
+        const wordsHashTable: object = this.asCountableLiteral(words);
+
+        const map = {
+            terms: termSlices,
+            mapping: {}
+        };
 
         if (wordsHashTable['length'] >= termSlices.length) {
             for (let i = 0; i < termSlices.length; i++) {
@@ -129,31 +133,26 @@ export class Filter {
         return null;
     }
 
-    private asCountableLiteral(collection: Object) {
-        const
-            clone: Object = {},
+    private asCountableLiteral(collection: object) {
+        const clone: object = {};
 
-            setAccessors: Function = (object: Object) => {
-                const
-                    calculateLength: Function = () => {
-                        return Object.keys(object).length;
+        const setAccessors: Function = (object: object) => {
+                const calculateLength: Function = () => {
+                    return Object.keys(object).length;
+                };
+
+                let length: number = calculateLength();
+
+                const accessors: Function = () => {
+                    return {
+                        get: () => {
+                            return length;
+                        },
+                        set: () => {
+                            length = calculateLength();
+                        }
                     };
-
-                let
-                    length: number = calculateLength();
-
-                const
-
-                    accessors: Function = () => {
-                        return {
-                            get: () => {
-                                return length;
-                            },
-                            set: () => {
-                                length = calculateLength();
-                            }
-                        };
-                    };
+                };
 
                 Object.defineProperties(object, {
                     length: accessors(length)
@@ -167,16 +166,14 @@ export class Filter {
         return clone;
     }
 
-    private indexOf( object: Object, term: string, wholeWord: Boolean = true): Number {
-        let
-            regexp: RegExp,
-            index = -1,
-            i = 0
-            ;
+    private indexOf( object: object, term: string, wholeWord: Boolean = true): Number {
+        let regexp: RegExp;
 
-        const
-            properties = Object.keys(object)
-            ;
+        let index = -1;
+
+        let i: number = 0;
+
+        const properties = Object.keys(object);
 
         term = term.trim();
 
@@ -214,15 +211,13 @@ export class Filter {
     }
 
     private termCount(collection: string[], term: string) {
-        let
-            i: any,
-            regexp: RegExp,
-            count = 0
-        ;
+        let i: any;
 
-        const
-            clone = Object.assign([], collection)
-        ;
+        let regexp: RegExp;
+
+        let count = 0;
+
+        const clone = Object.assign([], collection);
 
         term = term.trim();
 
