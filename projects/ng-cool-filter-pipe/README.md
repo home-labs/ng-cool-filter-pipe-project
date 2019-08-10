@@ -38,12 +38,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-    collection: Object[];
+    objectCollection: object[];
 
     filterTerm: string;
 
     constructor() {
-        this.collection = [
+        this.objectCollection = [
             {
                 name: 'First Name First Last Name',
                 gender: 'male'
@@ -83,7 +83,7 @@ export class AppComponent {
   />
 
 <ul>
-  <li *ngFor="let object of collection | filterBy:filterTerm:'name'">
+  <li *ngFor="let object of objectCollection | filterBy:filterTerm:'name'">
     {{ object.name }}
   </li>
 </ul>
