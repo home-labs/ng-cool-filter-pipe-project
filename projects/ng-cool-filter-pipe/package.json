@@ -1,6 +1,6 @@
 {
   "name": "ng-cool-filter-pipe",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": ">= 5",
     "@angular/core": ">= 5"
