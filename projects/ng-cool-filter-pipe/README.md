@@ -46,23 +46,23 @@ export class AppComponent {
         this.collection = [
             {
                 name: 'First Name First Last Name',
-                gender: 'masculino'
+                gender: 'male'
             },
             {
                 name: 'Second Name Second Last Name',
-                gender: 'masculino'
+                gender: 'male'
             },
             {
                 name: 'Third Name Third Last Name',
-                gender: 'feminino'
+                gender: 'famale'
             },
             {
                 name: 'Fourty Name Fourty Last Name',
-                gender: 'masculino'
+                gender: 'male'
             },
             {
                 name: 'Fifty Name Fifty Last Name',
-                gender: 'feminino'
+                gender: 'female'
             }
         ];
 
