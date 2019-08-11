@@ -67,7 +67,7 @@ export class Filter {
         return maps;
     }
 
-    private mapIfFound(term: string, text: string): object | null {
+    private mapIfFound(term: string = '', text: string = ''): object | null {
 
         let termIndex: Number;
 
@@ -81,9 +81,9 @@ export class Filter {
 
         let termSlice: string;
 
-        const termSlices = term.split(' ').filter(item => item !== '');
+        const termSlices = term.trim().split(' ').filter(item => item !== '');
 
-        const words = text.split(' ');
+        const words = text.trim().split(' ');
 
         const wordsHashTable: object = this.asCountableLiteral(words);
 
