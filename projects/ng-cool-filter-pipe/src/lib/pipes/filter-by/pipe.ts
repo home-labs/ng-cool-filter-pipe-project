@@ -17,15 +17,16 @@ export class FilterByPipe implements PipeTransform {
         this.filter = new Filter();
     }
 
-    transform(collection: object[] = [], term: string = '', ...properties: string[]): object[] {
+    transform(collection: object[] = [], term: string, ...properties: string[]): object[] {
 
         const filtered: object[] = [];
 
         // cause' the asynchronous loading
-        if (!collection.length || !term.length) {
+        if (!collection.length) {
             return collection;
         }
 
+        // do not stop getting the getMaps method if the term is empty, otherwise the cache will never be emptied, which may create unexpected results
         this.filter.getMaps(collection, term, ...properties).forEach(
             (map: object) => {
                 filtered.push(map['source']);

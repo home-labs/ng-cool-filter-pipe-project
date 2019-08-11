@@ -12,7 +12,7 @@ export class Filter {
         this.filteredCollectionCacheHashTableIndex = {};
     }
 
-    getMaps(collection: object[], term: string, ...properties: string[]): object[] {
+    getMaps(collection: object[], term: string = '', ...properties: string[]): object[] {
         let filtered: object[] = [];
 
         let map: object;
