@@ -3,7 +3,7 @@ import {
     PipeTransform
 } from '@angular/core';
 
-import { Filter } from '../../lib/filter';
+import { Filter } from '../filter';
 
 import { IFilteredMap } from '../i-filtered-map';
 
