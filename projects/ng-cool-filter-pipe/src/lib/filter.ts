@@ -1,3 +1,13 @@
+import { IFilteredMap } from './i-filtered-map';
+
+
+interface IHashTableOfWords {
+
+    length?: number;
+
+}
+
+
 export class Filter {
 
     private initialMaps: object[];
@@ -15,7 +25,7 @@ export class Filter {
     getMaps(collection: object[], term: string = '', ...properties: string[]): object[] {
         let filtered: object[] = [];
 
-        let map: object;
+        let map: IFilteredMap;
 
         let maps: object[] = [];
 
@@ -30,14 +40,11 @@ export class Filter {
         }
 
         if (term === '') {
-            if (
-                !this.filteredCollectionCacheHashTableIndex
-                    .hasOwnProperty(term)
-                ) {
+            if (!this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
                 collection.forEach(
                     (object: object) => {
                         map = new Object();
-                        map['source'] = object;
+                        map.source = object;
                         this.initialMaps.push(map);
                     }
                 );
@@ -52,7 +59,7 @@ export class Filter {
                         map = this.mapIfFound(term, object[property]);
                         if (map) {
                             filtered.push(object);
-                            map['source'] = object;
+                            map.source = object;
                             maps.push(map);
                             break;
                         }
@@ -69,15 +76,15 @@ export class Filter {
 
     private mapIfFound(term: string = '', text: string = ''): object | null {
 
-        let termIndex: Number;
+        let termIndex: number;
 
         let amount = 0;
 
         let regexp: RegExp;
 
-        let wordIndex: Number = -1;
+        let wordIndex = -1;
 
-        let cachedWordIndex: Number = -1;
+        let cachedWordIndex = -1;
 
         let termSlice: string;
 
@@ -85,23 +92,23 @@ export class Filter {
 
         const words = text.trim().split(' ');
 
-        const wordsHashTable: object = this.asCountableLiteral(words);
+        const hashTableOfWords: IHashTableOfWords = this.asCountableLiteral(words);
 
         const map = {
             terms: termSlices,
             mapping: {}
         };
 
-        if (wordsHashTable['length'] >= termSlices.length) {
+        if (hashTableOfWords.length >= termSlices.length) {
             for (let i = 0; i < termSlices.length; i++) {
                 termSlice = termSlices[i].trim();
 
                 if (i < termSlices.length - 1) {
-                    wordIndex = this.indexOf(wordsHashTable, termSlice);
+                    wordIndex = this.indexOf(hashTableOfWords, termSlice);
                 } else if (this.termCount(words, termSlice) >=
                     this.termCount(termSlices, termSlice)
                 ) {
-                    wordIndex = this.indexOf(wordsHashTable, termSlice, false);
+                    wordIndex = this.indexOf(hashTableOfWords, termSlice, false);
                 }
 
                 if (wordIndex !== -1
@@ -114,10 +121,10 @@ export class Filter {
                     termIndex = words[`${wordIndex}`].search(regexp);
                     map.mapping[`${wordIndex}`] = {
                         researchedSlice: termSlice,
-                        termIndex: termIndex
+                        termIndex: `${termIndex}`
                     };
 
-                    delete wordsHashTable[`${wordIndex}`];
+                    delete hashTableOfWords[`${wordIndex}`];
 
                     amount += 1;
                 } else {
@@ -136,14 +143,14 @@ export class Filter {
     private asCountableLiteral(collection: object) {
         const clone: object = {};
 
-        const setAccessors: Function = (object: object) => {
-            const calculateLength: Function = () => {
+        const setAccessors: (object: object) => void = (object: object) => {
+            const calculateLength: () => number = () => {
                 return Object.keys(object).length;
             };
 
             let length: number = calculateLength();
 
-            const accessors: Function = () => {
+            const accessors: (length: number) => object = () => {
                 return {
                     get: () => {
                         return length;
@@ -165,12 +172,12 @@ export class Filter {
         return clone;
     }
 
-    private indexOf( object: object, term: string, wholeWord: Boolean = true): Number {
+    private indexOf( object: object, term: string, wholeWord: boolean = true): number {
         let regexp: RegExp;
 
         let index = -1;
 
-        let i: number = 0;
+        let i = 0;
 
         let property: string;
 
@@ -181,9 +188,7 @@ export class Filter {
         if (wholeWord) {
             for (property of properties) {
                 if (typeof object[property] === 'string') {
-                    if (`${object[property]}`.toLocaleLowerCase()
-                        === term.toLowerCase()
-                    ) {
+                    if (`${object[property]}`.toLocaleLowerCase() === term.toLowerCase()) {
                         index = Number.parseInt(property, 10);
                         break;
                     }

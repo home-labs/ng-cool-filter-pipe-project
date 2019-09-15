@@ -3,7 +3,9 @@ import {
     PipeTransform
 } from '@angular/core';
 
-import { Filter } from '../../../lib/filter';
+import { Filter } from '../../lib/filter';
+
+import { IFilteredMap } from '../i-filtered-map';
 
 
 @Pipe({
@@ -26,10 +28,11 @@ export class FilterByPipe implements PipeTransform {
             return collection;
         }
 
-        // do not stop getting the getMaps method if the term is empty, otherwise the cache will never be emptied, which may create unexpected results
+        // do not stop getting the getMaps method if the term is empty, otherwise the cache will never be emptied, which may create
+        // unexpected results
         this.filter.getMaps(collection, term, ...properties).forEach(
-            (map: object) => {
-                filtered.push(map['source']);
+            (map: IFilteredMap) => {
+                filtered.push(map.source);
             }
         );
 
