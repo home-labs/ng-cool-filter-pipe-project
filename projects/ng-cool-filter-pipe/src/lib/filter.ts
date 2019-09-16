@@ -103,7 +103,6 @@ export class Filter {
             for (let i = 0; i < termSlices.length; i++) {
                 termSlice = termSlices[i].trim();
 
-                // what is the purpose?
                 if (i < termSlices.length - 1) {
                     wordIndex = this.indexOf(hashTableOfWords, termSlice);
                 } else if (this.termCount(words, termSlice) >=
@@ -118,6 +117,7 @@ export class Filter {
                     regexp = new RegExp(termSlice, 'i');
                     termIndex = words[`${wordIndex}`].search(regexp);
 
+                    // debugger
                     if (cachedWordIndex === -1 || termIndex === 0) {
                         map.mapping[`${wordIndex}`] = {
                             researchedSlice: termSlice,
@@ -126,6 +126,8 @@ export class Filter {
 
                         amount += 1;
                     }
+
+                    // iterar sobre hashTableOfWords? Porque se ainda houver palavras... Mas qual seria o critério?
 
                     cachedWordIndex = wordIndex;
 
@@ -179,10 +181,8 @@ export class Filter {
         return clone;
     }
 
-    private indexOf(words: object, term: string): number {
+    private indexOf(words: object, term: string, findOnlyBeginning: boolean = true): number {
         let regexp: RegExp;
-
-        let index = -1;
 
         let word: string;
 
@@ -192,19 +192,26 @@ export class Filter {
 
         regexp = new RegExp(term, 'i');
 
-        for (const i of indexes) {
-            if (typeof words[i] === 'string') {
-                word = words[i];
+        if (findOnlyBeginning) {
+            for (const i of indexes) {
+                if (typeof words[i] === 'string') {
+                    word = words[i];
 
-                if (word.search(regexp) !== -1) {
-                    index = parseInt(i, 10);
-                    break;
+                    if (word.search(regexp) === 0) {
+                        return parseInt(i, 10);
+                    }
                 }
             }
-        }
+        } else {
+            for (const i of indexes) {
+                if (typeof words[i] === 'string') {
+                    word = words[i];
 
-        if (index !== -1) {
-            return index;
+                    if (word.search(regexp) !== -1) {
+                        return parseInt(i, 10);
+                    }
+                }
+            }
         }
 
         return -1;
