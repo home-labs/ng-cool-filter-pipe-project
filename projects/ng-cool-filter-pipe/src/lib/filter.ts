@@ -86,7 +86,7 @@ export class Filter {
 
         let cachedWordIndex = -1;
 
-        let termSlice: string;
+        let lastTermWasWhole = false;
 
         const termSlices = term.trim().split(' ').filter(item => item !== '');
 
@@ -100,34 +100,37 @@ export class Filter {
         };
 
         if (hashTableOfWords.length >= termSlices.length) {
-            for (let i = 0; i < termSlices.length; i++) {
-                termSlice = termSlices[i].trim();
 
-                if (i < termSlices.length - 1) {
-                    wordIndex = this.indexOf(hashTableOfWords, termSlice);
-                } else if (this.termCount(words, termSlice) >=
-                    this.termCount(termSlices, termSlice)
-                ) {
-                    wordIndex = this.indexOf(hashTableOfWords, termSlice);
+            for (const termSlice of termSlices) {
+
+                if (cachedWordIndex === -1) {
+                    wordIndex = this.indexOfTerm(hashTableOfWords, termSlice, false);
+                } else {
+                    wordIndex = this.indexOfTerm(hashTableOfWords, termSlice);
                 }
 
-                if (wordIndex !== -1
-                    && (wordIndex > cachedWordIndex)
+                // ainda tem de resolver a questão de palavras seguidas. Se parte da palavra anterior encontrada, que não for o pedaço final desta, não deve ser considerado achado. Isso pode ser resolvdido em indexOfTerm
+                if (wordIndex !== -1 &&
+                    (lastTermWasWhole ||
+                        cachedWordIndex === -1 ||
+                        (wordIndex === (cachedWordIndex + 1) && amount === 1)
+                    )
                 ) {
                     regexp = new RegExp(termSlice, 'i');
                     termIndex = words[`${wordIndex}`].search(regexp);
 
-                    // debugger
-                    if (cachedWordIndex === -1 || termIndex === 0) {
-                        map.mapping[`${wordIndex}`] = {
-                            researchedSlice: termSlice,
-                            termIndex: `${termIndex}`
-                        };
+                    map.mapping[`${wordIndex}`] = {
+                        researchedSlice: termSlice,
+                        termIndex: `${termIndex}`
+                    };
 
-                        amount += 1;
+                    amount += 1;
+
+                    if (termSlice.toUpperCase() === hashTableOfWords[`${wordIndex}`].toUpperCase()) {
+                        lastTermWasWhole = true;
+                    } else {
+                        lastTermWasWhole = false;
                     }
-
-                    // iterar sobre hashTableOfWords? Porque se ainda houver palavras... Mas qual seria o critério?
 
                     cachedWordIndex = wordIndex;
 
@@ -181,7 +184,7 @@ export class Filter {
         return clone;
     }
 
-    private indexOf(words: object, term: string, findOnlyBeginning: boolean = true): number {
+    private indexOfTerm(words: object, term: string, findOnlyBeginning: boolean = true): number {
         let regexp: RegExp;
 
         let word: string;
@@ -215,33 +218,6 @@ export class Filter {
         }
 
         return -1;
-    }
-
-    private termCount(collection: string[], term: string) {
-        let i: any;
-
-        let regexp: RegExp;
-
-        let count = 0;
-
-        const clone = Object.assign([], collection);
-
-        term = term.trim();
-
-        regexp = new RegExp(term, 'i');
-
-        i = this.indexOf(clone, term);
-
-        if (i !== -1) {
-            while (i < collection.length) {
-                if (clone[i].trim().search(regexp) !== -1) {
-                    count += 1;
-                }
-                i++;
-            }
-        }
-
-        return count;
     }
 
 }

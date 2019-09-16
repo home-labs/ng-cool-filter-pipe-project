@@ -15,7 +15,7 @@ export class AppComponent {
     constructor() {
         this.objectCollection = [
             {
-                name: 'Rafael Pereira Laurindo',
+                name: 'Rafael Pereira Laurindo Bastos',
                 gender: 'masculino'
             },
             {
