@@ -1,6 +1,6 @@
 {
   "name": "@rplaurindo/ng-cool-filter-pipe",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "peerDependencies": {
     "@angular/common": ">= 5",
     "@angular/core": ">= 5"

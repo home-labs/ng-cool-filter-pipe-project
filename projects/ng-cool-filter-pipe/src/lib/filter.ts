@@ -115,24 +115,25 @@ export class Filter {
                 if (wordIndex !== -1
                     && (wordIndex > cachedWordIndex)
                 ) {
-                    cachedWordIndex = wordIndex;
-
                     regexp = new RegExp(termSlice, 'i');
                     termIndex = words[`${wordIndex}`].search(regexp);
 
-                    // to search only in order
-                    do {
-                        delete hashTableOfWords[`${wordIndex}`];
-                    }
-                    while (--wordIndex >= 0);
-
-                    // só deve fazer isso se o termIndex for igual a 0
+                    if (cachedWordIndex === -1 || termIndex === 0) {
                         map.mapping[`${wordIndex}`] = {
                             researchedSlice: termSlice,
                             termIndex: `${termIndex}`
                         };
 
                         amount += 1;
+                    }
+
+                    cachedWordIndex = wordIndex;
+
+                    // to search only in order
+                    do {
+                        delete hashTableOfWords[`${wordIndex}`];
+                    }
+                    while (--wordIndex >= 0);
                 } else {
                     break;
                 }
@@ -195,7 +196,7 @@ export class Filter {
             if (typeof words[i] === 'string') {
                 word = words[i];
 
-                if (word.search(regexp) > -1) {
+                if (word.search(regexp) !== -1) {
                     index = parseInt(i, 10);
                     break;
                 }
@@ -224,9 +225,9 @@ export class Filter {
 
         i = this.indexOf(clone, term);
 
-        if (i > -1) {
+        if (i !== -1) {
             while (i < collection.length) {
-                if (clone[i].trim().search(regexp) > -1) {
+                if (clone[i].trim().search(regexp) !== -1) {
                     count += 1;
                 }
                 i++;
