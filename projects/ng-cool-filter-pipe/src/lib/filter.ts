@@ -118,19 +118,20 @@ export class Filter {
                     cachedWordIndex = wordIndex;
 
                     regexp = new RegExp(termSlice, 'i');
-
                     termIndex = words[`${wordIndex}`].search(regexp);
-                    map.mapping[`${wordIndex}`] = {
-                        researchedSlice: termSlice,
-                        termIndex: `${termIndex}`
-                    };
 
                     do {
                         delete hashTableOfWords[`${wordIndex}`];
                     }
                     while (--wordIndex >= 0);
 
-                    amount += 1;
+                    // só deve fazer isso se o termIndex for igual a 0
+                        map.mapping[`${wordIndex}`] = {
+                            researchedSlice: termSlice,
+                            termIndex: `${termIndex}`
+                        };
+
+                        amount += 1;
                 } else {
                     break;
                 }
