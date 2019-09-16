@@ -120,6 +120,7 @@ export class Filter {
                     regexp = new RegExp(termSlice, 'i');
                     termIndex = words[`${wordIndex}`].search(regexp);
 
+                    // to search only in order
                     do {
                         delete hashTableOfWords[`${wordIndex}`];
                     }
