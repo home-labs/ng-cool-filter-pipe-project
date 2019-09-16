@@ -80,9 +80,11 @@ export class Filter {
 
         let amount = 0;
 
-        let regexp: RegExp;
-
         let wordIndex = -1;
+
+        let cachedTermSlice = ``;
+
+        let cachedWord = ``;
 
         let cachedWordIndex = -1;
 
@@ -109,15 +111,18 @@ export class Filter {
                     wordIndex = this.indexOfTerm(hashTableOfWords, termSlice);
                 }
 
-                // ainda tem de resolver a questão de palavras seguidas. Se parte da palavra anterior encontrada, que não for o pedaço final desta, não deve ser considerado achado. Isso pode ser resolvdido em indexOfTerm
                 if (wordIndex !== -1 &&
                     (lastTermWasWhole ||
                         cachedWordIndex === -1 ||
-                        (wordIndex === (cachedWordIndex + 1) && amount === 1)
+                        (wordIndex === (cachedWordIndex + 1) &&
+                            (cachedWord.search(new RegExp(`${cachedTermSlice}$`, 'i')) !== -1) &&
+                            amount === 1
+                        )
                     )
                 ) {
-                    regexp = new RegExp(termSlice, 'i');
-                    termIndex = words[`${wordIndex}`].search(regexp);
+                    cachedTermSlice = termSlice;
+                    cachedWord = words[`${wordIndex}`];
+                    termIndex = cachedWord.search(new RegExp(termSlice, 'i'));
 
                     map.mapping[`${wordIndex}`] = {
                         researchedSlice: termSlice,
