@@ -103,12 +103,13 @@ export class Filter {
             for (let i = 0; i < termSlices.length; i++) {
                 termSlice = termSlices[i].trim();
 
+                // what is the purpose?
                 if (i < termSlices.length - 1) {
                     wordIndex = this.indexOf(hashTableOfWords, termSlice);
                 } else if (this.termCount(words, termSlice) >=
                     this.termCount(termSlices, termSlice)
                 ) {
-                    wordIndex = this.indexOf(hashTableOfWords, termSlice, false);
+                    wordIndex = this.indexOf(hashTableOfWords, termSlice);
                 }
 
                 if (wordIndex !== -1
@@ -124,7 +125,10 @@ export class Filter {
                         termIndex: `${termIndex}`
                     };
 
-                    delete hashTableOfWords[`${wordIndex}`];
+                    do {
+                        delete hashTableOfWords[`${wordIndex}`];
+                    }
+                    while (--wordIndex >= 0);
 
                     amount += 1;
                 } else {
@@ -172,40 +176,27 @@ export class Filter {
         return clone;
     }
 
-    private indexOf( object: object, term: string, wholeWord: boolean = true): number {
+    private indexOf(words: object, term: string): number {
         let regexp: RegExp;
 
         let index = -1;
 
-        let i = 0;
+        let word: string;
 
-        let property: string;
-
-        const properties = Object.keys(object);
+        const indexes = Object.keys(words);
 
         term = term.trim();
 
-        if (wholeWord) {
-            for (property of properties) {
-                if (typeof object[property] === 'string') {
-                    if (`${object[property]}`.toLocaleLowerCase() === term.toLowerCase()) {
-                        index = Number.parseInt(property, 10);
-                        break;
-                    }
-                }
-                i++;
-            }
-        } else {
-            regexp = new RegExp(term, 'i');
+        regexp = new RegExp(term, 'i');
 
-            for (property of properties) {
-                if (typeof object[property] === 'string') {
-                    if (object[property].search(regexp) === 0) {
-                        index = Number.parseInt(property, 10);
-                        break;
-                    }
+        for (const i of indexes) {
+            if (typeof words[i] === 'string') {
+                word = words[i];
+
+                if (word.search(regexp) > -1) {
+                    index = parseInt(i, 10);
+                    break;
                 }
-                i++;
             }
         }
 
@@ -229,7 +220,7 @@ export class Filter {
 
         regexp = new RegExp(term, 'i');
 
-        i = this.indexOf(clone, term, false);
+        i = this.indexOf(clone, term);
 
         if (i > -1) {
             while (i < collection.length) {
