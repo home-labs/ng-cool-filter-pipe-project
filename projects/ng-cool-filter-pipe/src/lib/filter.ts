@@ -111,6 +111,9 @@ export class Filter {
                     wordIndex = this.indexOfTerm(hashTableOfWords, termSlice);
                 }
 
+                // a partir do primeiro termo a busca é feita em qualquer parte do texto; a partir do segundo a busca só retorna algo
+                // se o último termo encontrado coincidiu com a palavra inteira ou com o final dela. Se foi coincidido com a palavra inteira
+                // qualquer outra a direita da última palavra encontrada poderá ser encontrado
                 if (wordIndex !== -1 &&
                     (lastTermWasWhole ||
                         cachedWordIndex === -1 ||
