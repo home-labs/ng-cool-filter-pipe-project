@@ -129,7 +129,7 @@ export class Filter {
                     termIndex = lastWordFound.search(new RegExp(termPiece, 'i'));
 
                     map.mapping[`${wordIndexFound}`] = {
-                        researchedSlice: termPiece,
+                        researchedPiece: termPiece,
                         termIndex: `${termIndex}`
                     };
 
