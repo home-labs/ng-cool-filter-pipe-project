@@ -23,6 +23,7 @@ export class Filter {
     }
 
     getMaps(collection: object[], term: string = '', ...properties: string[]): object[] {
+
         let filtered: object[] = [];
 
         let map: IFilteredMap;
@@ -80,116 +81,84 @@ export class Filter {
 
         let amountFound = 0;
 
-        let wordIndex = -1;
+        let wordIndexFound = -1;
 
-        let cachedTermSlice = ``;
+        let pieceOfLastTermFound = ``;
 
-        let cachedWord = ``;
+        let lastWordFound = ``;
 
-        let cachedWordIndex = -1;
+        let lastWordFoundIndex = -1;
 
-        let lastTermWasWhole = false;
+        let lastTermFoundWasWhole = false;
 
-        const termSlices = term.trim().split(' ').filter(item => item !== '');
+        const piecesOfTerms = term.trim().split(' ').filter(item => item !== '');
 
         const words = text.trim().split(' ');
 
         const hashTableOfWords: IHashTableOfWords = this.asCountableLiteral(words);
 
         const map = {
-            terms: termSlices,
+            terms: piecesOfTerms,
             mapping: {}
         };
 
-        if (hashTableOfWords.length >= termSlices.length) {
+        if (hashTableOfWords.length >= piecesOfTerms.length) {
 
-            for (const termSlice of termSlices) {
+            for (const termPiece of piecesOfTerms) {
 
                 if (amountFound) {
-                    wordIndex = this.indexOfTerm(hashTableOfWords, termSlice, true);
+                    wordIndexFound = this.indexOfTerm(hashTableOfWords, termPiece, true);
                 } else {
-                    wordIndex = this.indexOfTerm(hashTableOfWords, termSlice);
+                    wordIndexFound = this.indexOfTerm(hashTableOfWords, termPiece);
                 }
 
                 // a partir do primeiro termo a busca é feita em qualquer parte do texto; a partir do segundo a busca só retorna algo
                 // se o último termo encontrado coincidiu com a palavra inteira ou com o final dela. Se foi coincidido com a palavra inteira
                 // qualquer outra a direita da última palavra encontrada poderá ser encontrado
-                if (wordIndex !== -1 &&
-                    (lastTermWasWhole ||
+                if (wordIndexFound !== -1 &&
+                    (lastTermFoundWasWhole ||
                         !amountFound ||
-                        (wordIndex === (cachedWordIndex + 1) &&
-                            (cachedWord.search(new RegExp(`${cachedTermSlice}$`, 'i')) !== -1) &&
+                        (wordIndexFound === (lastWordFoundIndex + 1) &&
+                            (lastWordFound.search(new RegExp(`${pieceOfLastTermFound}$`, 'i')) !== -1) &&
                             amountFound === 1
                         )
                     )
                 ) {
-                    cachedTermSlice = termSlice;
-                    cachedWord = words[`${wordIndex}`];
-                    termIndex = cachedWord.search(new RegExp(termSlice, 'i'));
+                    pieceOfLastTermFound = termPiece;
+                    lastWordFound = words[`${wordIndexFound}`];
+                    termIndex = lastWordFound.search(new RegExp(termPiece, 'i'));
 
-                    map.mapping[`${wordIndex}`] = {
-                        researchedSlice: termSlice,
+                    map.mapping[`${wordIndexFound}`] = {
+                        researchedSlice: termPiece,
                         termIndex: `${termIndex}`
                     };
 
                     amountFound += 1;
 
-                    if (termSlice.toUpperCase() === hashTableOfWords[`${wordIndex}`].toUpperCase()) {
-                        lastTermWasWhole = true;
+                    if (termPiece.toUpperCase() === hashTableOfWords[`${wordIndexFound}`].toUpperCase()) {
+                        lastTermFoundWasWhole = true;
                     } else {
-                        lastTermWasWhole = false;
+                        lastTermFoundWasWhole = false;
                     }
 
-                    cachedWordIndex = wordIndex;
+                    lastWordFoundIndex = wordIndexFound;
 
                     // to search only in order
                     do {
-                        delete hashTableOfWords[`${wordIndex}`];
+                        delete hashTableOfWords[`${wordIndexFound}`];
                     }
-                    while (--wordIndex >= 0);
+                    while (--wordIndexFound >= 0);
                 } else {
                     break;
                 }
             }
 
-            if (amountFound === termSlices.length) {
+            if (amountFound === piecesOfTerms.length) {
                 return map;
             }
         }
 
         return null;
-    }
-
-    private asCountableLiteral(collection: object) {
-        const clone: object = {};
-
-        const setAccessors: (object: object) => void = (object: object) => {
-            const calculateLength: () => number = () => {
-                return Object.keys(object).length;
-            };
-
-            let length: number = calculateLength();
-
-            const accessors: (length: number) => object = () => {
-                return {
-                    get: () => {
-                        return length;
-                    },
-                    set: () => {
-                        length = calculateLength();
-                    }
-                };
-            };
-
-            Object.defineProperties(object, {
-                length: accessors(length)
-            });
-        };
-
-        Object.assign(clone, collection);
-        setAccessors(clone);
-
-        return clone;
     }
 
     private indexOfTerm(words: object, term: string, fromBeginning: boolean = false): number {
@@ -226,6 +195,38 @@ export class Filter {
         }
 
         return -1;
+    }
+
+    private asCountableLiteral(collection: object) {
+        const clone: object = {};
+
+        const setAccessors: (object: object) => void = (object: object) => {
+            const calculateLength: () => number = () => {
+                return Object.keys(object).length;
+            };
+
+            let length: number = calculateLength();
+
+            const accessors: (length: number) => object = () => {
+                return {
+                    get: () => {
+                        return length;
+                    },
+                    set: () => {
+                        length = calculateLength();
+                    }
+                };
+            };
+
+            Object.defineProperties(object, {
+                length: accessors(length)
+            });
+        };
+
+        Object.assign(clone, collection);
+        setAccessors(clone);
+
+        return clone;
     }
 
 }
