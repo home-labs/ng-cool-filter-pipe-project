@@ -164,32 +164,21 @@ export class Filter {
     private indexOfTerm(words: object, term: string, fromBeginning: boolean = false): number {
         let regexp: RegExp;
 
-        let word: string;
-
-        const indexes = Object.keys(words);
+        let i = -1;
 
         term = term.trim();
 
+        if (fromBeginning) {
+            term = `^${term}`;
+        }
+
         regexp = new RegExp(term, 'i');
 
-        if (fromBeginning) {
-            for (const i of indexes) {
-                if (typeof words[i] === 'string') {
-                    word = words[i];
-
-                    if (word.search(regexp) === 0) {
-                        return parseInt(i, 10);
-                    }
-                }
-            }
-        } else {
-            for (const i of indexes) {
-                if (typeof words[i] === 'string') {
-                    word = words[i];
-
-                    if (word.search(regexp) !== -1) {
-                        return parseInt(i, 10);
-                    }
+        for (const word of Array.from(words as Iterable<string>)) {
+            ++i;
+            if (typeof word === 'string') {
+                if (word.search(regexp) !== -1) {
+                    return i;
                 }
             }
         }
