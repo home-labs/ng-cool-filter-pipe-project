@@ -78,7 +78,7 @@ export class Filter {
 
         let termIndex: number;
 
-        let amount = 0;
+        let amountFound = 0;
 
         let wordIndex = -1;
 
@@ -105,8 +105,8 @@ export class Filter {
 
             for (const termSlice of termSlices) {
 
-                if (cachedWordIndex === -1) {
-                    wordIndex = this.indexOfTerm(hashTableOfWords, termSlice, false);
+                if (amountFound) {
+                    wordIndex = this.indexOfTerm(hashTableOfWords, termSlice, true);
                 } else {
                     wordIndex = this.indexOfTerm(hashTableOfWords, termSlice);
                 }
@@ -116,10 +116,10 @@ export class Filter {
                 // qualquer outra a direita da última palavra encontrada poderá ser encontrado
                 if (wordIndex !== -1 &&
                     (lastTermWasWhole ||
-                        cachedWordIndex === -1 ||
+                        !amountFound ||
                         (wordIndex === (cachedWordIndex + 1) &&
                             (cachedWord.search(new RegExp(`${cachedTermSlice}$`, 'i')) !== -1) &&
-                            amount === 1
+                            amountFound === 1
                         )
                     )
                 ) {
@@ -132,7 +132,7 @@ export class Filter {
                         termIndex: `${termIndex}`
                     };
 
-                    amount += 1;
+                    amountFound += 1;
 
                     if (termSlice.toUpperCase() === hashTableOfWords[`${wordIndex}`].toUpperCase()) {
                         lastTermWasWhole = true;
@@ -152,7 +152,7 @@ export class Filter {
                 }
             }
 
-            if (amount === termSlices.length) {
+            if (amountFound === termSlices.length) {
                 return map;
             }
         }
@@ -192,7 +192,7 @@ export class Filter {
         return clone;
     }
 
-    private indexOfTerm(words: object, term: string, findOnlyBeginning: boolean = true): number {
+    private indexOfTerm(words: object, term: string, fromBeginning: boolean = false): number {
         let regexp: RegExp;
 
         let word: string;
@@ -203,7 +203,7 @@ export class Filter {
 
         regexp = new RegExp(term, 'i');
 
-        if (findOnlyBeginning) {
+        if (fromBeginning) {
             for (const i of indexes) {
                 if (typeof words[i] === 'string') {
                     word = words[i];
