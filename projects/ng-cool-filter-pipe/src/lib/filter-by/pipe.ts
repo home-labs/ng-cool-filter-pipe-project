@@ -9,7 +9,8 @@ import { IFilteredMap } from '../i-filtered-map';
 
 
 @Pipe({
-    name: 'filterBy'
+    name: 'filterBy',
+    pure: true
 })
 export class FilterByPipe implements PipeTransform {
 
