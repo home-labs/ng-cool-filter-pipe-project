@@ -6,14 +6,14 @@
 
 ## Installing
 
-	$ npm i ng-cool-filter-pipe --save
+	$ npm i @rplaurindo/ng-cool-filter-pipe --save
 
 ## Usage
 
-Include the module into `imports` metadata key of `NgModule` decorator in your application context, importing `NgCoolFilterPipeModule` from `ng-cool-filter-pipe`, like that.
+Include the module into `imports` metadata key of `NgModule` decorator in your application context, importing `NgCoolFilterPipeModule` from `@rplaurindo/ng-cool-filter-pipe`, like that.
 
 ```typescript
-import { NgCoolFilterPipeModule } from 'ng-cool-filter-pipe';
+import { NgCoolFilterPipeModule } from '@rplaurindo/ng-cool-filter-pipe';
 
 @NgModule({
     imports: [

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 
-import { FilterByPipe } from './pipes/filter-by/pipe';
+import { FilterByPipe } from './filter-by/pipe';
 
 
 @NgModule({

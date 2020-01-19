@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 
-import { NgCoolFilterPipeModule } from 'ng-cool-filter-pipe';
+// import { NgCoolFilterPipeModule } from '@rplaurindo/ng-cool-filter-pipe';
+import { NgCoolFilterPipeModule } from 'projects/ng-cool-filter-pipe';
 
 
 @NgModule({

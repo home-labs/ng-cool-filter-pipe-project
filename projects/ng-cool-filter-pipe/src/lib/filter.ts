@@ -1,3 +1,13 @@
+import { IFilteredMap } from './i-filtered-map';
+
+
+interface IHashTableOfWords {
+
+    length?: number;
+
+}
+
+
 export class Filter {
 
     private initialMaps: object[];
@@ -13,9 +23,10 @@ export class Filter {
     }
 
     getMaps(collection: object[], term: string = '', ...properties: string[]): object[] {
+
         let filtered: object[] = [];
 
-        let map: object;
+        let map: IFilteredMap;
 
         let maps: object[] = [];
 
@@ -30,14 +41,11 @@ export class Filter {
         }
 
         if (term === '') {
-            if (
-                !this.filteredCollectionCacheHashTableIndex
-                    .hasOwnProperty(term)
-                ) {
+            if (!this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
                 collection.forEach(
                     (object: object) => {
                         map = new Object();
-                        map['source'] = object;
+                        map.source = object;
                         this.initialMaps.push(map);
                     }
                 );
@@ -52,7 +60,7 @@ export class Filter {
                         map = this.mapIfFound(term, object[property]);
                         if (map) {
                             filtered.push(object);
-                            map['source'] = object;
+                            map.source = object;
                             maps.push(map);
                             break;
                         }
@@ -69,63 +77,83 @@ export class Filter {
 
     private mapIfFound(term: string = '', text: string = ''): object | null {
 
-        let termIndex: Number;
+        let termIndex: number;
 
-        let amount = 0;
+        let amountFound = 0;
 
-        let regexp: RegExp;
+        let wordIndexFound = -1;
 
-        let wordIndex: Number = -1;
+        let pieceOfLastTermFound = ``;
 
-        let cachedWordIndex: Number = -1;
+        let lastWordFound = ``;
 
-        let termSlice: string;
+        let lastWordFoundIndex = -1;
 
-        const termSlices = term.trim().split(' ').filter(item => item !== '');
+        let lastTermFoundWasWhole = false;
+
+        const piecesOfTerms = term.trim().split(' ').filter(item => item !== '');
 
         const words = text.trim().split(' ');
 
-        const wordsHashTable: object = this.asCountableLiteral(words);
+        const hashTableOfWords: IHashTableOfWords = this.asCountableLiteral(words);
 
         const map = {
-            terms: termSlices,
+            terms: piecesOfTerms,
             mapping: {}
         };
 
-        if (wordsHashTable['length'] >= termSlices.length) {
-            for (let i = 0; i < termSlices.length; i++) {
-                termSlice = termSlices[i].trim();
+        if (hashTableOfWords.length >= piecesOfTerms.length) {
 
-                if (i < termSlices.length - 1) {
-                    wordIndex = this.indexOf(wordsHashTable, termSlice);
-                } else if (this.termCount(words, termSlice) >=
-                    this.termCount(termSlices, termSlice)
-                ) {
-                    wordIndex = this.indexOf(wordsHashTable, termSlice, false);
+            for (const termPiece of piecesOfTerms) {
+
+                if (amountFound) {
+                    wordIndexFound = this.indexOfTerm(hashTableOfWords, termPiece, true);
+                } else {
+                    wordIndexFound = this.indexOfTerm(hashTableOfWords, termPiece);
                 }
 
-                if (wordIndex !== -1
-                    && (wordIndex > cachedWordIndex)
+                // a partir do primeiro termo a busca é feita em qualquer parte do texto; a partir do segundo a busca só retorna algo
+                // se o último termo encontrado coincidiu com a palavra inteira ou com o final dela. Se foi coincidido com a palavra inteira
+                // qualquer outra a direita da última palavra encontrada poderá ser encontrado
+                if (wordIndexFound !== -1 &&
+                    (lastTermFoundWasWhole ||
+                        !amountFound ||
+                        (wordIndexFound === (lastWordFoundIndex + 1) &&
+                            (lastWordFound.search(new RegExp(`${pieceOfLastTermFound}$`, 'i')) !== -1) &&
+                            amountFound === 1
+                        )
+                    )
                 ) {
-                    cachedWordIndex = wordIndex;
+                    pieceOfLastTermFound = termPiece;
+                    lastWordFound = words[`${wordIndexFound}`];
+                    termIndex = lastWordFound.search(new RegExp(termPiece, 'i'));
 
-                    regexp = new RegExp(termSlice, 'i');
-
-                    termIndex = words[`${wordIndex}`].search(regexp);
-                    map.mapping[`${wordIndex}`] = {
-                        researchedSlice: termSlice,
-                        termIndex: termIndex
+                    map.mapping[`${wordIndexFound}`] = {
+                        researchedPiece: termPiece,
+                        termIndex: `${termIndex}`
                     };
 
-                    delete wordsHashTable[`${wordIndex}`];
+                    amountFound += 1;
 
-                    amount += 1;
+                    if (termPiece.toUpperCase() === hashTableOfWords[`${wordIndexFound}`].toUpperCase()) {
+                        lastTermFoundWasWhole = true;
+                    } else {
+                        lastTermFoundWasWhole = false;
+                    }
+
+                    lastWordFoundIndex = wordIndexFound;
+
+                    // to search only in order
+                    do {
+                        delete hashTableOfWords[`${wordIndexFound}`];
+                    }
+                    while (--wordIndexFound >= 0);
                 } else {
                     break;
                 }
             }
 
-            if (amount === termSlices.length) {
+            if (amountFound === piecesOfTerms.length) {
                 return map;
             }
         }
@@ -133,17 +161,42 @@ export class Filter {
         return null;
     }
 
+    private indexOfTerm(words: object, term: string, fromBeginning: boolean = false): number {
+        let regexp: RegExp;
+
+        let i = -1;
+
+        term = term.trim();
+
+        if (fromBeginning) {
+            term = `^${term}`;
+        }
+
+        regexp = new RegExp(term, 'i');
+
+        for (const word of Array.from(words as Iterable<string>)) {
+            ++i;
+            if (typeof word === 'string') {
+                if (word.search(regexp) !== -1) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
     private asCountableLiteral(collection: object) {
         const clone: object = {};
 
-        const setAccessors: Function = (object: object) => {
-            const calculateLength: Function = () => {
+        const setAccessors: (object: object) => void = (object: object) => {
+            const calculateLength: () => number = () => {
                 return Object.keys(object).length;
             };
 
             let length: number = calculateLength();
 
-            const accessors: Function = () => {
+            const accessors: (length: number) => object = () => {
                 return {
                     get: () => {
                         return length;
@@ -163,79 +216,6 @@ export class Filter {
         setAccessors(clone);
 
         return clone;
-    }
-
-    private indexOf( object: object, term: string, wholeWord: Boolean = true): Number {
-        let regexp: RegExp;
-
-        let index = -1;
-
-        let i: number = 0;
-
-        let property: string;
-
-        const properties = Object.keys(object);
-
-        term = term.trim();
-
-        if (wholeWord) {
-            for (property of properties) {
-                if (typeof object[property] === 'string') {
-                    if (`${object[property]}`.toLocaleLowerCase()
-                        === term.toLowerCase()
-                    ) {
-                        index = Number.parseInt(property, 10);
-                        break;
-                    }
-                }
-                i++;
-            }
-        } else {
-            regexp = new RegExp(term, 'i');
-
-            for (property of properties) {
-                if (typeof object[property] === 'string') {
-                    if (object[property].search(regexp) === 0) {
-                        index = Number.parseInt(property, 10);
-                        break;
-                    }
-                }
-                i++;
-            }
-        }
-
-        if (index !== -1) {
-            return index;
-        }
-
-        return -1;
-    }
-
-    private termCount(collection: string[], term: string) {
-        let i: any;
-
-        let regexp: RegExp;
-
-        let count = 0;
-
-        const clone = Object.assign([], collection);
-
-        term = term.trim();
-
-        regexp = new RegExp(term, 'i');
-
-        i = this.indexOf(clone, term, false);
-
-        if (i > -1) {
-            while (i < collection.length) {
-                if (clone[i].trim().search(regexp) > -1) {
-                    count += 1;
-                }
-                i++;
-            }
-        }
-
-        return count;
     }
 
 }

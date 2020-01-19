@@ -5,10 +5,11 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es5",
     "typeRoots": [
@@ -19,12 +20,16 @@
       "dom"
     ],
     "paths": {
-      "ng-cool-filter-pipe": [
-        "dist/ng-cool-filter-pipe"
+      "@rplaurindo/ng-cool-filter-pipe": [
+        "dist/@rplaurindo/ng-cool-filter-pipe"
       ],
-      "ng-cool-filter-pipe/*": [
-        "dist/ng-cool-filter-pipe/*"
+      "@rplaurindo/ng-cool-filter-pipe/*": [
+        "dist/@rplaurindo/ng-cool-filter-pipe/*"
       ]
     }
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
   }
 }
