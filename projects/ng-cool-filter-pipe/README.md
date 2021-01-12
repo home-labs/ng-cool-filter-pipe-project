@@ -2,18 +2,18 @@
 
 ## Requirements
 
->- Angular 5 or higher.
+>- @angular/common and @angular/core 5 or higher.
 
 ## Installing
 
-	$ npm i @rplaurindo/ng-cool-filter-pipe --save
+	$ npm i @actjs.on/ng-cool-filter-pipe --save
 
 ## Usage
 
-Include the module into `imports` metadata key of `NgModule` decorator in your application context, importing `NgCoolFilterPipeModule` from `@rplaurindo/ng-cool-filter-pipe`, like that.
+Include the module into `imports` metadata key of `NgModule` decorator in your application context, importing `NgCoolFilterPipeModule` from `@actjs.on/ng-cool-filter-pipe`, like that.
 
 ```typescript
-import { NgCoolFilterPipeModule } from '@rplaurindo/ng-cool-filter-pipe';
+import { NgCoolFilterPipeModule } from '@actjs.on/ng-cool-filter-pipe';
 
 @NgModule({
     imports: [
@@ -23,7 +23,7 @@ import { NgCoolFilterPipeModule } from '@rplaurindo/ng-cool-filter-pipe';
 export class MyModule() { }
 ```
 
-## Usage example with ```*ngFor``` directive
+## Usage example with `*ngFor` directive
 
 ### Component source control
 
