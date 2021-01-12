@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/@rplaurindo/ng-cool-filter-pipe",
+  "dest": "../../dist/@actjs.on/ng-cool-filter-pipe",
   "lib": {
     "entryFile": "index.ts"
   }

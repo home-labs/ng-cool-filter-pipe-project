@@ -1,6 +1,6 @@
 {
-  "name": "@rplaurindo/ng-cool-filter-pipe",
-  "version": "1.0.0-rc.3",
+  "name": "@actjs.on/ng-cool-filter-pipe",
+  "version": "1.0.0-rc.1",
   "peerDependencies": {
     "@angular/common": ">= 5",
     "@angular/core": ">= 5"

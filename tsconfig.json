@@ -20,11 +20,11 @@
       "dom"
     ],
     "paths": {
-      "@rplaurindo/ng-cool-filter-pipe": [
-        "dist/@rplaurindo/ng-cool-filter-pipe"
+      "@actjs.on/ng-cool-filter-pipe": [
+        "dist/@actjs.on/ng-cool-filter-pipe"
       ],
-      "@rplaurindo/ng-cool-filter-pipe/*": [
-        "dist/@rplaurindo/ng-cool-filter-pipe/*"
+      "@actjs.on/ng-cool-filter-pipe/*": [
+        "dist/@actjs.on/ng-cool-filter-pipe/*"
       ]
     }
   },
