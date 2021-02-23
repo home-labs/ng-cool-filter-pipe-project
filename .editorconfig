@@ -8,11 +8,14 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 max_line_length = 80
 
-[*.{js,json,html,sass,haml}]
-indent_size = 2
+[*.{ts}]
+quote_type = single
 
-[*.{ts,php,md}]
+[*.{ts,md}]
 indent_size = 4
+
+[*.{js,json,html,styl}]
+indent_size = 2
 
 [*.{md,html}]
 max_line_length = off
