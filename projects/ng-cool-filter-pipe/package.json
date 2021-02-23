@@ -1,8 +1,11 @@
 {
   "name": "@actjs.on/ng-cool-filter-pipe",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "peerDependencies": {
-    "@angular/common": ">= 5",
-    "@angular/core": ">= 5"
+    "@angular/common": "^11.0.9",
+    "@angular/core": "^11.0.9"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }

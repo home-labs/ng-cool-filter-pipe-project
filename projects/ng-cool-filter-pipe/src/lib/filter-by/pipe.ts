@@ -9,8 +9,7 @@ import { IFilteredMap } from '../i-filtered-map';
 
 
 @Pipe({
-    name: 'filterBy',
-    pure: true
+    name: 'filterBy'
 })
 export class FilterByPipe implements PipeTransform {
 
@@ -24,13 +23,12 @@ export class FilterByPipe implements PipeTransform {
 
         const filtered: object[] = [];
 
-        // cause' the asynchronous loading
+        // cause' of asynchronous loading
         if (!collection.length) {
             return collection;
         }
 
-        // do not stop getting the getMaps method if the term is empty, otherwise the cache will never be emptied, which may create
-        // unexpected results
+        // do not stop to use the getMaps method if the term is empty, otherwise the cache will never be emptied, which may create unexpected results
         this.filter.getMaps(collection, term, ...properties).forEach(
             (map: IFilteredMap) => {
                 filtered.push(map.source);

@@ -1,11 +1,6 @@
 import { IFilteredMap } from './i-filtered-map';
 
-
-interface IHashTableOfWords {
-
-    length?: number;
-
-}
+import { IHashTableOfWords } from './i-hash-table-of-words';
 
 
 export class Filter {
