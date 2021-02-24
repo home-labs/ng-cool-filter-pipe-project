@@ -26,7 +26,7 @@ export class Filter {
         let maps: object[] = [];
 
         if (this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
-            collection = this.filteredCollectionCacheHashTableIndex[term];
+            collection = (this.filteredCollectionCacheHashTableIndex as any)[term];
         } else if (this.filteredCollectionCache.length) {
             collection = this.filteredCollectionCache;
         }
@@ -38,9 +38,9 @@ export class Filter {
         if (term === '') {
             if (!this.filteredCollectionCacheHashTableIndex.hasOwnProperty(term)) {
                 collection.forEach(
-                    (object: object) => {
+                    (item: object) => {
                         map = new Object();
-                        map.source = object;
+                        map.source = item;
                         this.initialMaps.push(map);
                     }
                 );
@@ -50,12 +50,12 @@ export class Filter {
             maps = this.initialMaps;
         } else {
             collection.forEach(
-                (object: object) => {
+                (item: object) => {
                     for (const property of properties) {
-                        map = this.mapIfFound(term, object[property]);
+                        map = this.mapIfFound(term, (item as any)[property]) as IFilteredMap;
                         if (map) {
-                            filtered.push(object);
-                            map.source = object;
+                            filtered.push(item);
+                            map.source = item;
                             maps.push(map);
                             break;
                         }
@@ -65,7 +65,7 @@ export class Filter {
         }
 
         this.filteredCollectionCache = filtered;
-        this.filteredCollectionCacheHashTableIndex[term] = filtered;
+        (this.filteredCollectionCacheHashTableIndex as any)[term] = filtered;
 
         return maps;
     }
@@ -97,7 +97,7 @@ export class Filter {
             mapping: {}
         };
 
-        if (hashTableOfWords.length >= piecesOfTerms.length) {
+        if ((hashTableOfWords.length)! >= piecesOfTerms.length) {
 
             for (const termPiece of piecesOfTerms) {
 
@@ -107,9 +107,7 @@ export class Filter {
                     wordIndexFound = this.indexOfTerm(hashTableOfWords, termPiece);
                 }
 
-                // a partir do primeiro termo a busca é feita em qualquer parte do texto; a partir do segundo a busca só retorna algo
-                // se o último termo encontrado coincidiu com a palavra inteira ou com o final dela. Se foi coincidido com a palavra inteira
-                // qualquer outra a direita da última palavra encontrada poderá ser encontrado
+                // a partir do primeiro termo a busca é feita em qualquer parte do texto; a partir do segundo a busca só retorna algo se o último termo encontrado coincidiu com a palavra à esquerda inteira ou com o final desta. Se foi coincidido com a palavra inteira qualquer outra à direita da última palavra encontrada poderá ser encontrada
                 if (wordIndexFound !== -1 &&
                     (lastTermFoundWasWhole ||
                         !amountFound ||
@@ -120,17 +118,17 @@ export class Filter {
                     )
                 ) {
                     pieceOfLastTermFound = termPiece;
-                    lastWordFound = words[`${wordIndexFound}`];
+                    lastWordFound = words[wordIndexFound];
                     termIndex = lastWordFound.search(new RegExp(termPiece, 'i'));
 
-                    map.mapping[`${wordIndexFound}`] = {
+                    (map.mapping as any)[wordIndexFound] = {
                         researchedPiece: termPiece,
                         termIndex: `${termIndex}`
                     };
 
                     amountFound += 1;
 
-                    if (termPiece.toUpperCase() === hashTableOfWords[`${wordIndexFound}`].toUpperCase()) {
+                    if (termPiece.toUpperCase() === (hashTableOfWords as any)[wordIndexFound].toUpperCase()) {
                         lastTermFoundWasWhole = true;
                     } else {
                         lastTermFoundWasWhole = false;
@@ -140,7 +138,7 @@ export class Filter {
 
                     // to search only in order
                     do {
-                        delete hashTableOfWords[`${wordIndexFound}`];
+                        delete (hashTableOfWords as any)[wordIndexFound];
                     }
                     while (--wordIndexFound >= 0);
                 } else {
@@ -181,7 +179,7 @@ export class Filter {
         return -1;
     }
 
-    private asCountableLiteral(collection: object) {
+    private asCountableLiteral(collection: object): object {
         const clone: object = {};
 
         const setAccessors: (object: object) => void = (object: object) => {

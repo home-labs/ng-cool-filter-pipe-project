@@ -8,7 +8,7 @@
   />
 
 <ul>
-  <li *ngFor="let object of objectCollection | filterBy:filterTerm:'name'">
-    {{ object.name }}
+  <li *ngFor="let item of objectCollection | filterBy:filterTerm:'name'">
+    {{ item.name }}
   </li>
 </ul>

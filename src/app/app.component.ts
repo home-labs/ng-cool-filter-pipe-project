@@ -1,5 +1,13 @@
 import { Component } from '@angular/core';
 
+interface ICollection {
+
+    name?: string;
+
+    gender?: string;
+
+}
+
 
 @Component({
   selector: 'app-root',
@@ -8,7 +16,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-    objectCollection: object[];
+    objectCollection: ICollection[];
 
     filterTerm: string;
 

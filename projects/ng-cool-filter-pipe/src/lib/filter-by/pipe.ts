@@ -31,7 +31,7 @@ export class FilterByPipe implements PipeTransform {
         // do not stop to use the getMaps method if the term is empty, otherwise the cache will never be emptied, which may create unexpected results
         this.filter.getMaps(collection, term, ...properties).forEach(
             (map: IFilteredMap) => {
-                filtered.push(map.source);
+                filtered.push((map.source)!);
             }
         );
 
