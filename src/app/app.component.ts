@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+
 interface ICollection {
 
     name?: string;
