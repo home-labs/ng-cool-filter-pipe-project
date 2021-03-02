@@ -169,6 +169,6 @@
   },
   "defaultProject": "ng-cool-filter-pipe-project",
   "cli": {
-    "analytics": false
+    "analytics": "f7b05490-52df-4ab8-89d5-98fb2b178532"
   }
 }
