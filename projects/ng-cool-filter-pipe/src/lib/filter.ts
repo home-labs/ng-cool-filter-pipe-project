@@ -1,3 +1,4 @@
+import { stringify } from '@angular/compiler/src/util';
 import { IFilteredMap } from './i-filtered-map';
 
 import { IHashTableOfWords } from './i-hash-table-of-words';
@@ -159,6 +160,8 @@ export class Filter {
 
         let i = -1;
 
+        let word: string;
+
         term = term.trim();
 
         if (fromBeginning) {
@@ -167,7 +170,8 @@ export class Filter {
 
         regexp = new RegExp(term, 'i');
 
-        for (const word of Array.from(words as Iterable<string>)) {
+        for (const wordIndex in words) {
+            word = (words as any)[wordIndex];
             ++i;
             if (typeof word === 'string') {
                 if (word.search(regexp) !== -1) {
