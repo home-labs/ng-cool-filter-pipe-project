@@ -1,4 +1,3 @@
-import { stringify } from '@angular/compiler/src/util';
 import { IFilteredMap } from './i-filtered-map';
 
 import { IHashTableOfWords } from './i-hash-table-of-words';
